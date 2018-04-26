@@ -4,53 +4,80 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const {User} = require('../db/models')
 module.exports = router
 
-/**
- * For OAuth keys and other secrets, your Node process will search
- * process.env to find environment variables. On your production server,
- * you will be able to set these environment variables with the appropriate
- * values. In development, a good practice is to keep a separate file with
- * these secrets that you only share with your team - it should NOT be tracked
- * by git! In this case, you may use a file called `secrets.js`, which will
- * set these environment variables like so:
- *
- * process.env.GOOGLE_CLIENT_ID = 'your google client id'
- * process.env.GOOGLE_CLIENT_SECRET = 'your google client secret'
- * process.env.GOOGLE_CALLBACK = '/your/google/callback'
- */
+passport.serializeUser((user, done) => {
+  done(null, user.id)
+})
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+  .then(user => done(null, user))
+  .catch(done)
+})
 
-  console.log('Google client ID / secret not found. Skipping Google OAuth.')
+router.get('/', passport.authenticate('google', { scope: 'email' }));
 
-} else {
-
-  const googleConfig = {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK
+router.get('/verify',
+  passport.authenticate('google', {
+    // successRedirect: '/', // or wherever
+    failureRedirect: '/login' // or wherever
+  }), (req, res) => {
+    req.redirect('/')
   }
+);
 
-  const strategy = new GoogleStrategy(googleConfig, (token, refreshToken, profile, done) => {
-    const googleId = profile.id
-    const name = profile.displayName
-    const email = profile.emails[0].value
+const googleConfig = {
+      clientID: process.env.GOOGLE_CLIENT_ID || '583129700749-l00ricq5e8csubc1etl631gmg8j9evg3.apps.googleusercontent.com',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '8QjdX_VEfloAdvsKIUt1gL-R',
+      callbackURL: process.env.GOOGLE_CALLBACK || 'http://localhost:8080/auth/google/verify'
+    }
 
-    User.find({where: {googleId}})
-      .then(foundUser => (foundUser
-        ? done(null, foundUser)
-        : User.create({name, email, googleId})
-          .then(createdUser => done(null, createdUser))
-      ))
-      .catch(done)
-  })
+passport.use(new GoogleStrategy(googleConfig, (token, refreshToken, profile, done) => {
+  const googleId = profile.id
+  const name = profile.displayName
+  const email = profile.emails[0].value
 
-  passport.use(strategy)
+  User.find({where: {googleId}})
+    .then(foundUser => (foundUser
+      ? done(null, foundUser)
+      : User.create({name, email, googleId})
+        .then(createdUser => done(null, createdUser))
+    ))
+    .catch(done)
+}))
 
-  router.get('/', passport.authenticate('google', {scope: 'email'}))
+// if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
 
-  router.get('/callback', passport.authenticate('google', {
-    successRedirect: '/home',
-    failureRedirect: '/login'
-  }))
+//   console.log('Google client ID / secret not found. Skipping Google OAuth.')
 
-}
+// } else {
+
+//   const googleConfig = {
+//     clientID: process.env.GOOGLE_CLIENT_ID || '583129700749-l00ricq5e8csubc1etl631gmg8j9evg3.apps.googleusercontent.com',
+//     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '8QjdX_VEfloAdvsKIUt1gL-R',
+//     callbackURL: process.env.GOOGLE_CALLBACK || 'http://localhost:8080/auth/google/verify'
+//   }
+
+//   const strategy = new GoogleStrategy(googleConfig, (token, refreshToken, profile, done) => {
+//     const googleId = profile.id
+//     const name = profile.displayName
+//     const email = profile.emails[0].value
+
+//     User.find({where: {googleId}})
+//       .then(foundUser => (foundUser
+//         ? done(null, foundUser)
+//         : User.create({name, email, googleId})
+//           .then(createdUser => done(null, createdUser))
+//       ))
+//       .catch(done)
+//   })
+
+//   passport.use(strategy)
+
+//   router.get('/', passport.authenticate('google', {scope: 'email'}))
+
+//   router.get('/verify', passport.authenticate('google', {
+//     successRedirect: '/home',
+//     failureRedirect: '/login'
+//   }))
+
+// }

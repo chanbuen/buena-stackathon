@@ -25,6 +25,7 @@ const AuthForm = (props) => {
         </div>
         {error && error.response && <div> {error.response.data} </div>}
       </form>
+      <a href="/auth/instagram">{displayName} with Instagram</a><br></br>
       <a href="/auth/google">{displayName} with Google</a>
     </div>
   )
