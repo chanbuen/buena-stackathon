@@ -3,10 +3,23 @@ const Sequelize = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
+  firstName: {
+    type: Sequelize.STRING
+  },
+  lastName: {
+    type: Sequelize.STRING
+  },
+  fullName: {
+    type: Sequelize.STRING,
+    get() {
+      return this.getDataValue('firstName') + ' ' + this.getDataValue('lastName')
+    }
+  },
   email: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false
+    allowNull: true
+    //need to put this back to false
   },
   password: {
     type: Sequelize.STRING,
@@ -26,6 +39,13 @@ const User = db.define('user', {
   },
   googleId: {
     type: Sequelize.STRING
+  },
+  instagramId: {
+    type: Sequelize.STRING
+  },
+  instagramProfilePicture: {
+    type: Sequelize.STRING,
+    defaultValue: 'https://static1.squarespace.com/static/557d1981e4b097936a86b629/t/558cf487e4b05d368538793a/1435301000191/'
   }
 })
 

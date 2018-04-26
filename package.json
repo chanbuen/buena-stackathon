@@ -1,5 +1,5 @@
 {
-  "name": "boilermaker",
+  "name": "stackathon",
   "version": "1.0.0",
   "description": "Some boilerplate code to get you started - get shakin'!",
   "engines": {
@@ -31,6 +31,7 @@
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
+    "passport-instagram": "^1.0.0",
     "pg": "^6.1.2",
     "pg-hstore": "^2.3.2",
     "prop-types": "^15.5.8",
