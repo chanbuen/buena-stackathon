@@ -19,3 +19,32 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+.user-home {
+  border: 2px #DCDCDC solid;
+}
+
+.user-home h3 {
+  text-align: center;
+}
+
+.instagram-profile {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.instagram-post {
+  display: flex;
+  padding: 5px;
+  background-color: #F0F0F0;
+  margin: 8px;
+  border-radius: 2px;
+}
+
+.navbar-container h1 {
+  background-color:#F0F0F0;
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  text-shadow: -1px 0 black;
+}

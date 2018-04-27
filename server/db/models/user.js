@@ -9,6 +9,12 @@ const User = db.define('user', {
   lastName: {
     type: Sequelize.STRING
   },
+  instagramDisplayName: {
+    type: Sequelize.STRING
+  },
+  instagramMedia: {
+    type: Sequelize.JSON
+  },
   fullName: {
     type: Sequelize.STRING,
     get() {
