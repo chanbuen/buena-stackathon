@@ -5,7 +5,6 @@ const {User} = require('../db/models')
 const INSTA_CLIENT_ID = require('../../secrets').INSTA_CLIENT_ID
 const INSTA_CLIENT_SECRET = require('../../secrets').INSTA_CLIENT_SECRET
 const INSTA_CALLBACK = require('../../secrets').INSTA_CALLBACK
-const ig = require('instagram-node').instagram()
 const axios = require('axios')
 
 

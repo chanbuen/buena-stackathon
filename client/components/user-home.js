@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import InstagramProfile from './insta-profile'
 import {requestProfile} from '../store'
+import GoogleMap from './map'
 
 /**
  * COMPONENT

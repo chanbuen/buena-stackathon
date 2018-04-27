@@ -48,3 +48,12 @@ form div {
   border-radius: 5px;
   text-shadow: -1px 0 black;
 }
+
+.infoWindow-pic{
+  width: 16px;
+  height: 16px;
+}
+
+.address-search-bar input{
+  margin-bottom: 10px
+}
