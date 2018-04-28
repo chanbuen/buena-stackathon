@@ -48,3 +48,36 @@ form div {
   border-radius: 5px;
   text-shadow: -1px 0 black;
 }
+
+.infoWindow-pic{
+  width: 16px;
+  height: 16px;
+}
+
+.address-search-bar input{
+  margin-bottom: 10px
+}
+
+.map-search-result{
+  display: inline-flex;
+}
+
+.map-search-sidebar {
+  display: flex;
+  display: inline-grid;
+  margin-right: 5px;
+}
+
+.map-search-sidebar button {
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.address-search-bar label {
+  font-family: 'Assistant', sans-serif;
+}
+
+.dropdown {
+  margin-bottom: 5px;
+}

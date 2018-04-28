@@ -5,7 +5,6 @@ const {User} = require('../db/models')
 const INSTA_CLIENT_ID = require('../../secrets').INSTA_CLIENT_ID
 const INSTA_CLIENT_SECRET = require('../../secrets').INSTA_CLIENT_SECRET
 const INSTA_CALLBACK = require('../../secrets').INSTA_CALLBACK
-const ig = require('instagram-node').instagram()
 const axios = require('axios')
 
 
@@ -41,10 +40,9 @@ const instaConfig = {
 }
 
 passport.use(new InstagramStrategy(instaConfig, (token, refreshToken, profile, done) => {
-  console.log('PROFILE', profile)
   
   axios.get(`https://api.instagram.com/v1/users/self/media/recent/?access_token=${token}`, (req, res) => {
-    console.log('RES', res)
+
   })
   
   const info = {
@@ -55,8 +53,6 @@ passport.use(new InstagramStrategy(instaConfig, (token, refreshToken, profile, d
     instagramProfilePicture: profile._json.data.profile_picture,
     instagramMedia: `https://api.instagram.com/v1/users/${profile.id}/media/recent/?access_token=${token}`
   }
-
-  console.log('MEDIA', info.instagramMedia)
 
   User.findOrCreate( { where : { instagramId: profile.id } , defaults : info } ) 
     .then(([user, boolean]) => {

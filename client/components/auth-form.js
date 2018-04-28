@@ -2,12 +2,15 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
-
+// const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
+// const googleMapsClient = require('@google/maps').createClient({
+//   key: GOOGLE_MAPS_API_KEY
+// })
 /**
  * COMPONENT
  */
 const AuthForm = (props) => {
-  const {name, displayName, handleSubmit, error} = props
+  const {name, displayName, handleSubmit, error, calculateDistance} = props
 
   return (
     <div>
