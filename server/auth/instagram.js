@@ -40,10 +40,9 @@ const instaConfig = {
 }
 
 passport.use(new InstagramStrategy(instaConfig, (token, refreshToken, profile, done) => {
-  console.log('PROFILE', profile)
   
   axios.get(`https://api.instagram.com/v1/users/self/media/recent/?access_token=${token}`, (req, res) => {
-    console.log('RES', res)
+
   })
   
   const info = {
@@ -54,8 +53,6 @@ passport.use(new InstagramStrategy(instaConfig, (token, refreshToken, profile, d
     instagramProfilePicture: profile._json.data.profile_picture,
     instagramMedia: `https://api.instagram.com/v1/users/${profile.id}/media/recent/?access_token=${token}`
   }
-
-  console.log('MEDIA', info.instagramMedia)
 
   User.findOrCreate( { where : { instagramId: profile.id } , defaults : info } ) 
     .then(([user, boolean]) => {

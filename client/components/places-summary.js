@@ -1,25 +1,43 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { map } from '.'
-import {distance} from 'google-distance-matrix'
+import axios from 'axios'
  
 class PlacesSummary extends Component {
   constructor(props){
     super(props)
   }
 
+  
+// calculateDistance(){
+//   // let origins = [`${this.props.userLatitude},${this.props.userLongitude}`]
+//   let origin = '40.7084,74.0087'
+//   let destination = `40.72095,-73.9963`
+//   axios.get('/api/distance')
+//     .then(res => res.data)
+//     .then(console.log)
+//     .catch(err => console.log(`Unable to get distance ${err}`))
+//     googleMapsClient.directions({
+//       origin: origins,
+//       destination: destinations,
+//       mode: 'driving'
+//     }, function(err, data) {
+//       if (err) {
+//         console.error(err)
+//       } else {
+//         console.log(data)
+//       }
+//     })
+  // geolib.getDistance(
+  //   {latitude : 40.7084, longitude : 74.0087},
+  //   {latitude : 40.72095, longitude : -73.9963}
+  // )
 
+// }
   render(){
-    let origins = [`${this.props.userLatitude},${this.props.userLongitude}`]
-    let destinations = [`40.72095,-73.9963`]
+    // const test = this.calculateDistance()
     return(
       <div>
-        {
-          distance.matrix(origins, destinations, function (err, distances) {
-            if (!err)
-                console.log(distances);
-          })
-        }
+        
       </div>
     )
   }
