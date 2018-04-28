@@ -10,6 +10,8 @@ class MapContainer extends Component {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
+      lat: 0,
+      lng: 0,
     };
     this.onMarkerClick = this.onMarkerClick.bind(this)
     this.findUrl = this.findUrl.bind(this)
@@ -36,7 +38,7 @@ class MapContainer extends Component {
       selectedPlace: props
     })
   }
-  
+
     findUrl(){
       this.props.posts.filter(post => {
         if(post.location.name === this.state.selectedPlace.title) {
@@ -51,7 +53,6 @@ class MapContainer extends Component {
     console.log('THIS.PROPS', this.props)
     const {posts} = this.props
     // console.log(this.props.posts[0].images.thumbnail.url)
-
     return (
       <Map google={this.props.google} 
         initialCenter={{
