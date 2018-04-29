@@ -6,6 +6,8 @@ import PlacesAutocomplete from 'react-places-autocomplete'
 import Geocode from 'react-geocode'
 import {assignUserLat} from '../store/user-lat'
 import {assignUserLng} from '../store/user-lng'
+import {assignUserState} from '../store/user-state'
+import {saveFilteredPosts} from '../store/user-posts-filtered'
 
 class Search extends Component {
   constructor(props) {
@@ -18,6 +20,8 @@ class Search extends Component {
       searchTag: '',
       distance: 0,
       editedDistance: false,
+      changeView: false,
+      postsBySearch: [],
     }
     this.setAddress = this.setAddress.bind(this)
     // this.handleChange = this.handleChange.bind(this)
@@ -27,12 +31,40 @@ class Search extends Component {
     this.setState({ [event.target.name] : event.target.value })
   }
 
-  filterPosts = event => {
+  filterPosts = (event, callback) => {
+    let filteredPosts = this.props.instaPosts.filter((post => {
+      if (post.tags.includes(this.state.searchTag) === true) {
+        return post 
+      } 
+    }))
+    this.setState({postsBySearch: filteredPosts, changeView : true})
+    console.log(this.filteredPosts)
+    this.props.filter(this.state.postsBySearch)
 
+    callback()
   }
 
-  calculateDistance(){
-    
+  getDistance = () => {
+
+    let distanceMatrixServ = new this.props.google.maps.DistanceMatrixService()
+    distanceMatrixServ.getDistanceMatrix({
+      origins: ['40.785091,‎-73.968285'],
+      destinations: ['41.8337329,-87.7321554'],
+      travelMode: this.props.google.maps.TravelMode.WALKING,
+      unitSystem: this.props.google.maps.UnitSystem.METRIC
+    }, function(res, status) {
+      if (status!=this.props.google.maps.DistanceMatrixService.OK){
+        console.log('Distance Service Error: ' + status)
+      } else {
+        console.log(res)
+      }
+    })
+    // console.log(this.state.distance)
+    // console.log(this.props.userLatitude)
+    // console.log(this.props.userLongitude)
+    //   axios.post('/api/distance')
+    //   .then(console.log)
+    //   .catch(err => console.log(`can't get distance ${err}`))
   }
 
   setAddress(event) {
@@ -43,7 +75,10 @@ class Search extends Component {
         const { lat, lng } = response.results[0].geometry.location;
         console.log(lat, lng);
         // this.setState({ lat, lng})
-        this.props.setCoordinates(lat, lng)
+        let city = this.state.address.split(',')[1]
+        let state = this.state.address.split(',')[2]
+        let combined = city+','+state
+        this.props.setCoordinates(lat, lng, combined)
         console.log(this.state.lat, this.state.lng)
         this.setState({editedAddress : true})
       },
@@ -105,14 +140,14 @@ class Search extends Component {
                       </div>
                       {
                         Number(this.state.distance) > 0
-                        ? <button type="submit" onSubmit={this.calculateDistance}>Submit Search</button>
+                        ? <button onClick={(event) => this.filterPosts(event, this.getDistance)}>Submit Search</button>
                         : null
                       }
                     </div>
                   : null
                 }
               </div>
-              <GoogleMap posts={this.props.instaPosts}/>
+              <GoogleMap latitude={this.props.userLatitude} longitude={this.props.userLongitude} posts={this.state.changeView === false ? this.props.instaPosts : this.state.postsBySearch}/>
             </div>
           }
 
@@ -124,15 +159,22 @@ class Search extends Component {
 
 const mapToState = state => {
   return {
-    instaPosts: state.instagramProfile
+    instaPosts: state.instagramProfile,
+    userLatitude: state.userLat,
+    userLongitude: state.userLng,
+
   }
 }
 
 const mapToDispatch = dispatch => {
   return {
-    setCoordinates(lat, lng) {
+    setCoordinates(lat, lng, add) {
       dispatch(assignUserLat(lat))
       dispatch(assignUserLng(lng))
+      dispatch(assignUserState(add))
+    },
+    filter(posts){
+      dispatch(saveFilteredPosts(posts))
     }
   }
 }

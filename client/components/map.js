@@ -15,23 +15,32 @@ class MapContainer extends Component {
     };
     this.onMarkerClick = this.onMarkerClick.bind(this)
     this.findUrl = this.findUrl.bind(this)
+
   }
 
   mapClicked(mapProps, map, clickEvent) {
-    console.log('MAP PROPS', mapProps)
-    console.log('MAP', map)
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow : !this.state.showingInfoWindow,
         activeMarker: {}})
     }
-    // ...
+
+  }
+
+  getDistance = () => {
+
+    let distanceMatrixServ = new this.props.google.maps.DistanceMatrixService()
+    distanceMatrixServ.getDistanceMatrix({
+      origins: ['41.8337329,-87.7321554'],
+      destinations: ['41.8337329,-87.7321554'],
+      travelMode: 'WALKING',
+    }, function(res, status) {
+      console.log('RES', res)
+      }
+    )
   }
 
   onMarkerClick(props, marker, event){
-    console.log('PROPS ON CLICK', props)
-    console.log('MARKER', marker)
-
     this.setState({
       showingInfoWindow: true,
       activeMarker: marker,
@@ -42,7 +51,6 @@ class MapContainer extends Component {
     findUrl(){
       this.props.posts.filter(post => {
         if(post.location.name === this.state.selectedPlace.title) {
-          console.log(post.images.low_resolution.url)
           return post.images.low_resolution.url
         }
       })
@@ -51,13 +59,13 @@ class MapContainer extends Component {
 
   render() {
     console.log('THIS.PROPS', this.props)
+    console.log(this.getDistance())
     const {posts} = this.props
-    // console.log(this.props.posts[0].images.thumbnail.url)
     return (
       <Map google={this.props.google} 
         initialCenter={{
-          lat: 40.7829,
-          lng: -73.968285,
+          lat: Number(this.props.latitude),
+          lng: Number(this.props.longitude),
         }}
 
         onClick={this.mapClicked}

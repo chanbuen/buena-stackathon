@@ -17,7 +17,7 @@ const defaultUser = {}
  */
 const getUser = user => ({type: GET_USER, user})
 const removeUser = () => ({type: REMOVE_USER})
-// const setProfile = () => ({type: SET_USER_PROFILE, profile})
+
 /**
  * THUNK CREATORS
  */
@@ -25,7 +25,6 @@ export const me = () =>
   dispatch =>
     axios.get('/auth/me')
       .then(res => {
-        console.log('RES.DATA', res.data)
         return dispatch(getUser(res.data || defaultUser))
       })
       .catch(err => console.log(err))
@@ -49,16 +48,6 @@ export const logout = () =>
         history.push('/login')
       })
       .catch(err => console.log(err))
-
-// export const requestProfile = (mediaLink) => 
-//   dispatch =>
-//     axios.get(mediaLink)
-//     .then(res => res.data.data)
-//     .then(media => {
-//       console.log('MEDIA', media)
-//       dispatch(setProfile(media)) 
-//     })
-//     .catch(err => console.error(`Unable to get media : ${err}`))
 
 /**
  * REDUCER
