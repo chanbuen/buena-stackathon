@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import axios from 'axios'
+import {saveDistances} from '../store'
 const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
 
 class MapContainer extends Component {
@@ -12,11 +13,13 @@ class MapContainer extends Component {
       selectedPlace: {},
       lat: 0,
       lng: 0,
+   
     };
     this.onMarkerClick = this.onMarkerClick.bind(this)
     this.findUrl = this.findUrl.bind(this)
 
   }
+
 
   mapClicked(mapProps, map, clickEvent) {
     if (this.state.showingInfoWindow) {
@@ -25,19 +28,6 @@ class MapContainer extends Component {
         activeMarker: {}})
     }
 
-  }
-
-  getDistance = () => {
-
-    let distanceMatrixServ = new this.props.google.maps.DistanceMatrixService()
-    distanceMatrixServ.getDistanceMatrix({
-      origins: ['41.8337329,-87.7321554'],
-      destinations: ['41.8337329,-87.7321554'],
-      travelMode: 'WALKING',
-    }, function(res, status) {
-      console.log('RES', res)
-      }
-    )
   }
 
   onMarkerClick(props, marker, event){
@@ -59,13 +49,13 @@ class MapContainer extends Component {
 
   render() {
     console.log('THIS.PROPS', this.props)
-    console.log(this.getDistance())
-    const {posts} = this.props
+
+    const {posts, latitude, longitude, google} = this.props
     return (
-      <Map google={this.props.google} 
+      <Map google={google} 
         initialCenter={{
-          lat: Number(this.props.latitude),
-          lng: Number(this.props.longitude),
+          lat: Number(latitude),
+          lng: Number(longitude),
         }}
 
         onClick={this.mapClicked}
@@ -97,7 +87,6 @@ class MapContainer extends Component {
     );
   }
 }
- 
 
  
 export default GoogleApiWrapper({

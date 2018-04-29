@@ -8,8 +8,9 @@ import userLat from './user-lat'
 import userLng from './user-lng'
 import userState from './user-state'
 import filteredPosts from './user-posts-filtered'
+import distances from './distances'
 
-const reducer = combineReducers({user, instagramProfile, userLat, userLng, userState, filteredPosts})
+const reducer = combineReducers({user, instagramProfile, userLat, userLng, userState, filteredPosts, distances})
 const middleware = composeWithDevTools(applyMiddleware(
   thunkMiddleware,
   createLogger({collapsed: true})
@@ -23,3 +24,4 @@ export * from './user-lat'
 export * from './user-lng'
 export * from './user-state'
 export * from './user-posts-filtered'
+export * from './distances'

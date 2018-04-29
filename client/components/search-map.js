@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {GoogleMap} from './index'
+import {GoogleMap, PlacesSummary} from './index'
 import axios from 'axios'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import Geocode from 'react-geocode'
@@ -8,6 +8,8 @@ import {assignUserLat} from '../store/user-lat'
 import {assignUserLng} from '../store/user-lng'
 import {assignUserState} from '../store/user-state'
 import {saveFilteredPosts} from '../store/user-posts-filtered'
+import {saveDistances} from '../store/distances'
+const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
 
 class Search extends Component {
   constructor(props) {
@@ -18,79 +20,70 @@ class Search extends Component {
       address: '',
       editedAddress: false,
       searchTag: '',
-      distance: 0,
+      time: 0,
       editedDistance: false,
       changeView: false,
       postsBySearch: [],
+      travelMode: '',
+      distanceResults: {}
     }
     this.setAddress = this.setAddress.bind(this)
-    // this.handleChange = this.handleChange.bind(this)
   }
 
   handleChange = event => {
     this.setState({ [event.target.name] : event.target.value })
   }
 
-  filterPosts = (event, callback) => {
-    let filteredPosts = this.props.instaPosts.filter((post => {
+  filterPosts = (event, callback, posts) => {
+    let filteredPosts = posts.filter((post => {
       if (post.tags.includes(this.state.searchTag) === true) {
         return post 
       } 
     }))
     this.setState({postsBySearch: filteredPosts, changeView : true})
-    console.log(this.filteredPosts)
-    this.props.filter(this.state.postsBySearch)
+    console.log(filteredPosts)
+    this.props.filter(filteredPosts)
 
-    callback()
+    callback(filteredPosts)
   }
 
-  getDistance = () => {
-
-    let distanceMatrixServ = new this.props.google.maps.DistanceMatrixService()
-    distanceMatrixServ.getDistanceMatrix({
-      origins: ['40.785091,‎-73.968285'],
-      destinations: ['41.8337329,-87.7321554'],
-      travelMode: this.props.google.maps.TravelMode.WALKING,
-      unitSystem: this.props.google.maps.UnitSystem.METRIC
-    }, function(res, status) {
-      if (status!=this.props.google.maps.DistanceMatrixService.OK){
-        console.log('Distance Service Error: ' + status)
-      } else {
-        console.log(res)
-      }
+  getDistance = (posts) => {
+    let destinations = posts.map(post => {
+      return `${post.location.latitude},${post.location.longitude}`
     })
-    // console.log(this.state.distance)
-    // console.log(this.props.userLatitude)
-    // console.log(this.props.userLongitude)
-    //   axios.post('/api/distance')
-    //   .then(console.log)
-    //   .catch(err => console.log(`can't get distance ${err}`))
+    let origins = [`${this.state.lat},${this.state.lng}`]
+    let travelMode = this.props.travelMode || 'WALKING'
+    console.log('DESTINATIONARR', destinations)
+
+    axios.post('/api/distance', {origins, destinations, travelMode})
+      .then(res => res.data)
+      .then(data => this.props.setDist(data))
+      .catch(err => console.log(`unable to get distances, ${err}`))
+
   }
 
   setAddress(event) {
     console.log(this.state.address)
-    Geocode.setApiKey('AIzaSyDzu32kGFKuqie0TZTPpOC9T79UQTndxh4')
-    Geocode.fromAddress(this.state.address).then(
-      response => {
-        const { lat, lng } = response.results[0].geometry.location;
-        console.log(lat, lng);
-        // this.setState({ lat, lng})
-        let city = this.state.address.split(',')[1]
-        let state = this.state.address.split(',')[2]
-        let combined = city+','+state
-        this.props.setCoordinates(lat, lng, combined)
-        console.log(this.state.lat, this.state.lng)
-        this.setState({editedAddress : true})
-      },
-      error => {
-        console.error(error);
-      }
-    );
-    
+    Geocode.setApiKey(GOOGLE_MAPS_API_KEY)
+    Geocode.fromAddress(this.state.address)
+      .then(
+        response => {
+          const { lat, lng } = response.results[0].geometry.location;
+          console.log(lat, lng);
+          this.setState({ lat, lng})
+          let city = this.state.address.split(',')[1]
+          let state = this.state.address.split(',')[2]
+          this.setState({editedAddress : true})
+        },
+        error => {
+          console.error(`Unable to set latitude and longitude ${error}`);
+        }
+      );
   }
 
   render() {
-    console.log('DISTANCE',this.state.distance)
+ 
+    const {searchTag, time, travelMode} = this.state
     return(
       <div className="address-search-bar">
         {
@@ -118,8 +111,8 @@ class Search extends Component {
               }
               </PlacesAutocomplete>
               <button onClick={this.setAddress}>Submit</button>
-            </div>
-            :
+          </div>
+          :
             <div className="map-search-result"> 
               <div className="map-search-sidebar">
               <label>{`START`}</label>
@@ -127,27 +120,37 @@ class Search extends Component {
                 <button onClick={() => this.setState({editedAddress : !this.state.editedAddress})}>Change Starting Point</button>
                 <label>Search by Tag</label>
                 <input type="text" name="searchTag" placeholder="nyceats" value={this.state.searchTag} onChange={this.handleChange}/>
-                {
-                  this.state.searchTag.length 
-                  ? <div>
-                      <label>Search by Distance</label>
-                      <div className="dropdown">                      
-                          <select name="distance" type="number" onChange={this.handleChange}>
-                            <option>{100}</option>
-                            <option>{200}</option>
-                            <option>{500}</option>
-                          </select>
-                      </div>
+                <div>
+                  <label>Travel Mode</label>
+                    <select name="travelMode" type="text" onChange={this.handleChange}>
+                          <option>Select Mode</option>
                       {
-                        Number(this.state.distance) > 0
-                        ? <button onClick={(event) => this.filterPosts(event, this.getDistance)}>Submit Search</button>
-                        : null
+                        ['WALKING','TRANSIT','DRIVING'].map((mode,idx) => {
+                          return (
+                            <option key={idx}>{mode}</option>
+                          )
+                        })
                       }
-                    </div>
-                  : null
-                }
-              </div>
-              <GoogleMap latitude={this.props.userLatitude} longitude={this.props.userLongitude} posts={this.state.changeView === false ? this.props.instaPosts : this.state.postsBySearch}/>
+                    </select>
+                  <label>Travel Time</label>
+                  <div className="dropdown">                      
+                      <select name="time" type="number" onChange={this.handleChange}>
+                        <option>Select Minutes</option>
+                        <option>{15}</option>
+                        <option>{20}</option>
+                        <option>{30}</option>
+                      </select>
+                  </div>
+                  {
+                    searchTag.length && Number(time) > 0 && travelMode.length
+                    ? 
+                    <button onClick={(e) => this.filterPosts(e, this.getDistance, this.props.instaPosts)}>Submit Search</button>
+                    : null
+                  }
+                </div>
+                <PlacesSummary time={this.state.time}/>
+            </div>
+              <GoogleMap travelMode={this.state.travelMode} add={this.state.address} latitude={this.state.lat} longitude={this.state.lng} posts={this.state.changeView === true && this.state.postsBySearch.length ? this.state.postsBySearch : this.props.instaPosts }/>
             </div>
           }
 
@@ -175,6 +178,9 @@ const mapToDispatch = dispatch => {
     },
     filter(posts){
       dispatch(saveFilteredPosts(posts))
+    },
+    setDist(distances){
+      dispatch(saveDistances(distances))
     }
   }
 }

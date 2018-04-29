@@ -8,18 +8,30 @@ class PlacesSummary extends Component {
     super(props)
   }
 
-  componentDidMount(){
-    axios.get('/api/distance')
-      .then(res => res.data)
-      .then(console.log)
-      .catch(err => console.log(`Unable to get distance ${err}`))
-}
   render(){
-    // const test = this.calculateDistance()
-    console.log(this.props.filteredPosts)
+      const {places, distances, time} = this.props
+      console.log('PLACES', places)
+      console.log('DISTANCES', distances)
     return(
       <div>
-        
+        <ul>
+        {
+          distances && distances.length && (places.length === distances[0].elements.length)
+          ? places.map((place, idx) => {
+              if (Number((distances[0].elements[idx].duration.value)/60) <= Number(time)) {
+                return (
+                  <li key={idx}>{place.location.name}
+                    <ul>
+                      <li>{distances[0].elements[idx].distance.text}</li>
+                      <li>{distances[0].elements[idx].duration.text}</li>
+                    </ul>
+                  </li>
+                )
+              }
+          })
+          : null
+        }
+        </ul>
       </div>
     )
   }
@@ -29,7 +41,8 @@ const mapToState = state => {
   return {
     userLatitude: state.userLat,
     userLongitude: state.userLng,
-    places: state.filteredPosts
+    places: state.filteredPosts,
+    distances: state.distances
   }
 }
 
