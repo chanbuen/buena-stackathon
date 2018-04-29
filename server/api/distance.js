@@ -1,36 +1,21 @@
 const router = require('express').Router()
+const axios = require('axios')
 const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
-// const distance = require('google-distance-matrix')
+const distance = require('google-distance-matrix') 
 module.exports = router
-var googleMapsClient = require('@google/maps').createClient({
-  key: GOOGLE_MAPS_API_KEY
-});
 
-// Geocode an address.
 
-router.get('/', (req, res, next) => {
-  console.log('REQ.BODY', req.body)
-  const origins = '40.7084,74.0087'
-  const destinations = `40.72095,-73.9963`
-  // distance.matrix(origins, destinations, function(err, distances){
-  //   if (!err)
-  //     console.log(distances)
-  // })
+router.post('/', (req, res, next) => {
 
-  googleMapsClient.directions({
-    origins,
-    destinations
-  }, function(err, response) {
-    if (!err) {
-      console.log(response.json.results);
-    }
-  });
-})
+ console.log('REQ.BODY', req.body)
+ const origins = req.body.origins
+ const destinations = req.body.destinations
+ const mode = req.body.travelMode
 
-// googleMapsClient.geocode({
-//   address: '1600 Amphitheatre Parkway, Mountain View, CA'
-// }, function(err, response) {
-//   if (!err) {
-//     console.log(response.json.results);
-//   }
-// });
+  distance.matrix(origins, destinations, mode, function(err, distances){
+    if (!err)
+      console.log(distances)
+      res.json(distances.rows)
+  })
+}) 
+

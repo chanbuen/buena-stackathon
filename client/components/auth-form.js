@@ -13,7 +13,7 @@ const AuthForm = (props) => {
   const {name, displayName, handleSubmit, error, calculateDistance} = props
 
   return (
-    <div>
+    <div className="auth-form">
       <form onSubmit={handleSubmit} name={name}>
         <div>
           <label htmlFor="email"><small>Email</small></label>
@@ -28,8 +28,10 @@ const AuthForm = (props) => {
         </div>
         {error && error.response && <div> {error.response.data} </div>}
       </form>
-      <a href="/auth/instagram">{displayName} with Instagram</a><br></br>
-      <a href="/auth/google">{displayName} with Google</a>
+      <div className="auth-form-logins">
+        <a href="/auth/instagram">{displayName} with Instagram</a><br></br>
+        <a href="/auth/google">{displayName} with Google</a>
+      </div>
     </div>
   )
 }

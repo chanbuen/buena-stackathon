@@ -1,43 +1,37 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import axios from 'axios'
+// const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
  
 class PlacesSummary extends Component {
   constructor(props){
     super(props)
   }
 
-  
-// calculateDistance(){
-//   // let origins = [`${this.props.userLatitude},${this.props.userLongitude}`]
-//   let origin = '40.7084,74.0087'
-//   let destination = `40.72095,-73.9963`
-//   axios.get('/api/distance')
-//     .then(res => res.data)
-//     .then(console.log)
-//     .catch(err => console.log(`Unable to get distance ${err}`))
-//     googleMapsClient.directions({
-//       origin: origins,
-//       destination: destinations,
-//       mode: 'driving'
-//     }, function(err, data) {
-//       if (err) {
-//         console.error(err)
-//       } else {
-//         console.log(data)
-//       }
-//     })
-  // geolib.getDistance(
-  //   {latitude : 40.7084, longitude : 74.0087},
-  //   {latitude : 40.72095, longitude : -73.9963}
-  // )
-
-// }
   render(){
-    // const test = this.calculateDistance()
+      const {places, distances, time} = this.props
+      console.log('PLACES', places)
+      console.log('DISTANCES', distances)
     return(
       <div>
-        
+        <ul>
+        {
+          distances && distances.length && (places.length === distances[0].elements.length)
+          ? places.map((place, idx) => {
+              if (Number((distances[0].elements[idx].duration.value)/60) <= Number(time)) {
+                return (
+                  <li key={idx}>{place.location.name}
+                    <ul>
+                      <li>{distances[0].elements[idx].distance.text}</li>
+                      <li>{distances[0].elements[idx].duration.text}</li>
+                    </ul>
+                  </li>
+                )
+              }
+          })
+          : null
+        }
+        </ul>
       </div>
     )
   }
@@ -47,6 +41,8 @@ const mapToState = state => {
   return {
     userLatitude: state.userLat,
     userLongitude: state.userLng,
+    places: state.filteredPosts,
+    distances: state.distances
   }
 }
 

@@ -6,6 +6,13 @@ a {
   text-decoration: none;
 }
 
+button {
+  font-family: 'Poppins', sans-serif;
+  background-color: white;
+  border-radius: 5px;
+
+}
+
 label {
   display: block;
 }
@@ -20,6 +27,9 @@ form div {
   display: inline-block;
 }
 
+hr {
+  border: dashed;
+}
 .user-home {
   border: 2px #DCDCDC solid;
 }
@@ -41,12 +51,43 @@ form div {
   border-radius: 2px;
 }
 
-.navbar-container h1 {
-  background-color:#F0F0F0;
-  padding: 10px;
-  color: white;
+.navbar-container,bar {
+  font-family: 'Poppins', sans-serif;
+  /* background-color: #F8F8F8;	 */
   border-radius: 5px;
-  text-shadow: -1px 0 black;
+}
+
+.auth-form a, .auth-form label{
+  font-family: 'Poppins', sans-serif;
+}
+
+.auth-form-logins {
+  margin-left: 15px;
+}
+
+.navbar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.bar {
+  margin-left: 450px;
+}
+.bar-login{
+  margin-left: 300px;
+}
+
+.navbar-container,bar a:hover{
+  color: #E8E8E8;
+  text-shadow: blueviolet;
+}
+.navbar-container h1 {
+  font-family: 'Poppins', sans-serif;
+  padding: 10px;
+  color: black;
+  border-radius: 5px;
+  font-size: 20px;
 }
 
 .infoWindow-pic{
@@ -54,8 +95,20 @@ form div {
   height: 16px;
 }
 
+.instagram-profile {
+  background-color: #F8F8F8;
+}
+
+.address-search-bar {
+  margin-left: 10px;
+}
+
 .address-search-bar input{
   margin-bottom: 10px
+}
+
+.address-search-bar label{
+  margin-bottom: 10px;
 }
 
 .map-search-result{
@@ -65,7 +118,7 @@ form div {
 .map-search-sidebar {
   display: flex;
   display: inline-grid;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .map-search-sidebar button {
