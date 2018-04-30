@@ -2,10 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
-// const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
-// const googleMapsClient = require('@google/maps').createClient({
-//   key: GOOGLE_MAPS_API_KEY
-// })
+
 /**
  * COMPONENT
  */
@@ -30,7 +27,7 @@ const AuthForm = (props) => {
       </form>
       <div className="auth-form-logins">
         <a href="/auth/instagram">{displayName} with Instagram</a><br></br>
-        <a href="/auth/google">{displayName} with Google</a>
+        {/* <a href="/auth/google">{displayName} with Google</a> */}
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import axios from 'axios'
-// const GOOGLE_MAPS_API_KEY = require('../../secrets').GOOGLE_MAPS_API_KEY
  
 class PlacesSummary extends Component {
   constructor(props){
@@ -13,7 +12,7 @@ class PlacesSummary extends Component {
       console.log('PLACES', places)
       console.log('DISTANCES', distances)
     return(
-      <div>
+      <div className="places">
         <ul>
         {
           distances && distances.length && (places.length === distances[0].elements.length)
@@ -42,7 +41,7 @@ const mapToState = state => {
     userLatitude: state.userLat,
     userLongitude: state.userLng,
     places: state.filteredPosts,
-    distances: state.distances
+    distances: state.distances  
   }
 }
 

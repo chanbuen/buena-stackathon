@@ -52,7 +52,8 @@ class Search extends Component {
       return `${post.location.latitude},${post.location.longitude}`
     })
     let origins = [`${this.state.lat},${this.state.lng}`]
-    let travelMode = this.props.travelMode || 'WALKING'
+    let travelMode = (this.state.travelMode && this.state.travelMode.length) ? this.state.travelMode : 'WALKING'
+    console.log('THIS.PROPS.TRAVELMODE')
     console.log('DESTINATIONARR', destinations)
 
     axios.post('/api/distance', {origins, destinations, travelMode})
@@ -120,7 +121,7 @@ class Search extends Component {
                 <button onClick={() => this.setState({editedAddress : !this.state.editedAddress})}>Change Starting Point</button>
                 <label>Search by Tag</label>
                 <input type="text" name="searchTag" placeholder="nyceats" value={this.state.searchTag} onChange={this.handleChange}/>
-                <div>
+                <div className="travel-filters">
                   <label>Travel Mode</label>
                     <select name="travelMode" type="text" onChange={this.handleChange}>
                           <option>Select Mode</option>
@@ -150,7 +151,7 @@ class Search extends Component {
                 </div>
                 <PlacesSummary time={this.state.time}/>
             </div>
-              <GoogleMap travelMode={this.state.travelMode} add={this.state.address} latitude={this.state.lat} longitude={this.state.lng} posts={this.state.changeView === true && this.state.postsBySearch.length ? this.state.postsBySearch : this.props.instaPosts }/>
+              <GoogleMap time={this.state.time} travelMode={this.state.travelMode} add={this.state.address} latitude={this.state.lat} longitude={this.state.lng} posts={this.state.changeView === true && this.state.postsBySearch.length ? this.state.postsBySearch : this.props.instaPosts }/>
             </div>
           }
 
