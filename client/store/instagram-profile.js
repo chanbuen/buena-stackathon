@@ -26,7 +26,6 @@ export const requestProfile = (mediaLink) =>
     axios.get(mediaLink)
     .then(res => res.data.data)
     .then(media => {
-      console.log('MEDIA', media)
       dispatch(setProfile(media)) 
     })
     .catch(err => console.error(`Unable to get media : ${err}`))

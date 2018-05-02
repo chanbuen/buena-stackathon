@@ -41,15 +41,14 @@ class MapContainer extends Component {
     findUrl(){
       this.props.posts.filter(post => {
         if(post.location.name === this.state.selectedPlace.title) {
-          return post.images.low_resolution.url
+          return post.link
+          // return post.images.low_resolution.url
         }
       })
     }
   
 
   render() {
-    console.log('THIS.PROPS', this.props)
-
     const {posts, latitude, longitude, google} = this.props
     return (
       <Map google={google} 
@@ -78,7 +77,7 @@ class MapContainer extends Component {
         marker={this.state.activeMarker}
         visible={this.state.showingInfoWindow}>
           <div className="marker">
-            <h2>{this.state.selectedPlace.name}</h2>
+            <a href=""><h2>{this.state.selectedPlace.name}</h2></a>
             <img src={`${this.findUrl()}`} className="infoWindow-pic"/>
           </div>
       </InfoWindow>

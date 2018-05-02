@@ -41,7 +41,6 @@ class Search extends Component {
       } 
     }))
     this.setState({postsBySearch: filteredPosts, changeView : true})
-    console.log(filteredPosts)
     this.props.filter(filteredPosts)
 
     callback(filteredPosts)
@@ -52,8 +51,7 @@ class Search extends Component {
       return `${post.location.latitude},${post.location.longitude}`
     })
     let origins = [`${this.state.lat},${this.state.lng}`]
-    let travelMode = this.props.travelMode || 'WALKING'
-    console.log('DESTINATIONARR', destinations)
+    let travelMode = (this.state.travelMode && this.state.travelMode.length) ? this.state.travelMode : 'WALKING'
 
     axios.post('/api/distance', {origins, destinations, travelMode})
       .then(res => res.data)
@@ -63,13 +61,11 @@ class Search extends Component {
   }
 
   setAddress(event) {
-    console.log(this.state.address)
     Geocode.setApiKey(GOOGLE_MAPS_API_KEY)
     Geocode.fromAddress(this.state.address)
       .then(
         response => {
           const { lat, lng } = response.results[0].geometry.location;
-          console.log(lat, lng);
           this.setState({ lat, lng})
           let city = this.state.address.split(',')[1]
           let state = this.state.address.split(',')[2]
@@ -120,7 +116,7 @@ class Search extends Component {
                 <button onClick={() => this.setState({editedAddress : !this.state.editedAddress})}>Change Starting Point</button>
                 <label>Search by Tag</label>
                 <input type="text" name="searchTag" placeholder="nyceats" value={this.state.searchTag} onChange={this.handleChange}/>
-                <div>
+                <div className="travel-filters">
                   <label>Travel Mode</label>
                     <select name="travelMode" type="text" onChange={this.handleChange}>
                           <option>Select Mode</option>
@@ -150,7 +146,7 @@ class Search extends Component {
                 </div>
                 <PlacesSummary time={this.state.time}/>
             </div>
-              <GoogleMap travelMode={this.state.travelMode} add={this.state.address} latitude={this.state.lat} longitude={this.state.lng} posts={this.state.changeView === true && this.state.postsBySearch.length ? this.state.postsBySearch : this.props.instaPosts }/>
+              <GoogleMap time={this.state.time} travelMode={this.state.travelMode} add={this.state.address} latitude={this.state.lat} longitude={this.state.lng} posts={this.state.changeView === true && this.state.postsBySearch.length ? this.state.postsBySearch : this.props.instaPosts }/>
             </div>
           }
 

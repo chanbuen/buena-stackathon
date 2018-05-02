@@ -11,11 +11,6 @@ const axios = require('axios')
 module.exports = router
 
 
-console.log('INSTA_CLIENT_ID', INSTA_CLIENT_ID)
-console.log('INSTA_CLIENT_SECRET', INSTA_CLIENT_SECRET)
-console.log('INSTA_CLIENT_CALLBACK', INSTA_CALLBACK)
-
-
 passport.serializeUser((user, done) => {
   done(null, user.id)
 })
