@@ -41,7 +41,6 @@ class Search extends Component {
       } 
     }))
     this.setState({postsBySearch: filteredPosts, changeView : true})
-    console.log(filteredPosts)
     this.props.filter(filteredPosts)
 
     callback(filteredPosts)
@@ -53,8 +52,6 @@ class Search extends Component {
     })
     let origins = [`${this.state.lat},${this.state.lng}`]
     let travelMode = (this.state.travelMode && this.state.travelMode.length) ? this.state.travelMode : 'WALKING'
-    console.log('THIS.PROPS.TRAVELMODE')
-    console.log('DESTINATIONARR', destinations)
 
     axios.post('/api/distance', {origins, destinations, travelMode})
       .then(res => res.data)
@@ -64,13 +61,11 @@ class Search extends Component {
   }
 
   setAddress(event) {
-    console.log(this.state.address)
     Geocode.setApiKey(GOOGLE_MAPS_API_KEY)
     Geocode.fromAddress(this.state.address)
       .then(
         response => {
           const { lat, lng } = response.results[0].geometry.location;
-          console.log(lat, lng);
           this.setState({ lat, lng})
           let city = this.state.address.split(',')[1]
           let state = this.state.address.split(',')[2]

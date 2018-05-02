@@ -9,8 +9,7 @@ class PlacesSummary extends Component {
 
   render(){
       const {places, distances, time} = this.props
-      console.log('PLACES', places)
-      console.log('DISTANCES', distances)
+
     return(
       <div className="places">
         <ul>

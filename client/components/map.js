@@ -41,7 +41,6 @@ class MapContainer extends Component {
     findUrl(){
       this.props.posts.filter(post => {
         if(post.location.name === this.state.selectedPlace.title) {
-          console.log('POST.LINK', post.link)
           return post.link
           // return post.images.low_resolution.url
         }
@@ -50,8 +49,6 @@ class MapContainer extends Component {
   
 
   render() {
-    console.log('THIS.PROPS', this.props)
-    console.log('SELECTED PLACE', this.state.selectedPlace)
     const {posts, latitude, longitude, google} = this.props
     return (
       <Map google={google} 
